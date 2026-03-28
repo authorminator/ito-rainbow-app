@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  status: 1
+  cards_per_player: 1
+  host_player_id: 
+
+two:
+  code: MyString
+  status: 1
+  cards_per_player: 1
+  host_player_id: 
