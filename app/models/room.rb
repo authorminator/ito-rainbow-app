@@ -10,4 +10,5 @@ class Room < ApplicationRecord
   def host
     players.find_by(id: host_player_id)
   end
+
 end

@@ -5,4 +5,5 @@ class Player < ApplicationRecord
   validates :nickname, presence: true
   validates :color, presence: true
   validates :session_token, presence: true, uniqueness: true
+
 end

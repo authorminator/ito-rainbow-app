@@ -133,4 +133,27 @@ class RoundsController < ApplicationController
 
     redirect_to room_path(room.code), notice: "Arrangement confirmed."
   end
+
+  def update_order
+    round = Round.find(params[:id])
+    room = round.room
+
+    unless round.arranging?
+      head :unprocessable_entity and return
+    end
+
+    unless current_player&.id == room.host_player_id
+      head :forbidden and return
+    end
+
+    ordered_ids = params[:ordered_ids] || []
+
+    ActiveRecord::Base.transaction do
+      ordered_ids.each_with_index do |assignment_id, index|
+        round.round_assignments.find(assignment_id).update!(display_order: index + 1)
+      end
+    end
+
+    head :ok
+  end
 end

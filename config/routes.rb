@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     post :go_later, on: :member
     post :done_arranging, on: :member
     post :reveal, on: :member
+    post :update_order, on: :member
   end
 
   resources :players, only: [:create, :destroy]
