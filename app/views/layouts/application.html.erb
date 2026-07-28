@@ -10,8 +10,11 @@
     <%= javascript_importmap_tags %>
   </head>
   <body>
-    <main class="container mx-auto mt-8 px-5 flex">
+    <main class="container mx-auto my-8 px-5 flex flex-row justify-center">
       <%= yield %>
     </main>
   </body>
 </html>
+<!-- I removed the "min-h-screen" class from the main container in the application layout, which was causing the content to stretch to fill the entire height of the viewport. This change allows the content to be centered and sized according to its own dimensions, rather than being forced to occupy the full height of the screen.
+
+I also removed the "items-center" class from the main container, which was causing the content to be vertically centered within the viewport. This change allows the content to be positioned according to its own dimensions, rather than being forced to be centered within the viewport. -->

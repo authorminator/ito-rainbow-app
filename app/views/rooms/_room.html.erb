@@ -1,119 +1,80 @@
 <% @room = room %>
 <% @current_round = @room.rounds.order(created_at: :desc).first %>
-<div class="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-lg">
-  <div class="mb-6 flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-800">Room <%= room.code %></h1>
-      <p class="text-sm text-slate-600">
-        Status: <%= room.status.humanize %>
-      </p>
-    </div>
-    <% if room.host_player_id == current_player&.id %>
-      <span class="rounded-full bg-slate-800 px-3 py-1 text-sm font-semibold text-white">Host</span>
-    <% end %>
-  </div>
-  <div class="mb-6 rounded-xl bg-slate-50 p-4">
-    <h2 class="mb-2 text-lg font-semibold text-slate-800">Room Settings</h2>
-    <p class="text-slate-700">Cards per player: <%= room.cards_per_player %></p>
-  </div>
-  <div class="mb-6">
-    <h2 class="mb-3 text-lg font-semibold text-slate-800">Players</h2>
-    <div class="space-y-3">
-      <% room.players.order(:created_at).each do |player| %>
-        <div class="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
-          <div class="flex items-center gap-3">
-            <span class="text-lg font-bold <%= diamond_color_class(player.color) %>">◆</span>
-            <span class="font-medium text-slate-800"><%= player.nickname %></span>
-          </div>
-          <div class="flex items-center gap-2">
-            <% if room.host_player_id == player.id %>
-              <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">Host</span>
-            <% end %>
-            <% if current_player&.id == player.id %>
-              <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">You</span>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
-  <% if room.lobby? %>
-    <div class="rounded-xl bg-slate-50 p-4">
+<%# <div class="mx-auto max-w-7xl"> %>
+<div class="max-w-7xl lg:grid lg:grid-cols-4 lg:gap-4">
+  <!-- Left Sidebar -->
+  <aside class="lg:col-span-1 bg-amber-300 p-6 shadow-lg rounded-2xl">
+    <!-- Room header -->
+    <div class="mb-6 flex flex-col items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800">Room <%= room.code %></h1>
+        <!-- <p class="text-sm text-slate-600">
+            Status: <%= room.status.humanize %>
+          </p>
+          -->
+      </div>
       <% if room.host_player_id == current_player&.id %>
-        <p class="mb-4 text-slate-700">When everyone has joined, start the round.</p>
-        <%= button_to "Start Round",
-                start_round_room_path(room.code),
-                method: :post,
-                class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
-      <% else %>
-        <p class="text-slate-700">Waiting for the host to start the round...</p>
+        <span class="rounded-full bg-slate-800 px-3 py-1 text-sm font-semibold text-white">Host</span>
       <% end %>
     </div>
-  <% else %>
-    <div class="space-y-4">
-      <% if @current_round %>
-        <div class="rounded-xl bg-slate-50 p-4">
-          <h2 class="mb-2 text-lg font-semibold text-slate-800">Current Round</h2>
-          <p class="text-slate-700"><strong>Theme:</strong> <%= @current_round.theme %></p>
-          <p class="text-slate-700"><strong>Phase:</strong> <%= @current_round.phase.humanize %></p>
-        </div>
-        <div class="rounded-xl bg-slate-50 p-4">
-          <h2 class="mb-3 text-lg font-semibold text-slate-800">Submitted Clues</h2>
-          <% if @current_round.submitted_assignments.any? %>
-            <div class="space-y-3">
-              <% @current_round.submitted_assignments.each do |assignment| %>
-                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                  <div class="flex items-center gap-2">
-                    <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                    <span class="font-medium text-slate-800">
-                      <%= assignment.player.nickname %>
-                    </span>
-                  </div>
-                  <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
-                </div>
+    <!-- Players -->
+    <div class="mb-6 rounded-xl bg-slate-50 p-4">
+      <h2 class="mb-3 text-lg font-semibold text-slate-800">Players</h2>
+      <div class="space-y-3">
+        <% room.players.order(:created_at).each do |player| %>
+          <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+            <div class="flex items-center gap-3">
+              <span class="text-lg font-bold <%= diamond_color_class(player.color) %>">◆</span>
+              <span class="font-medium text-slate-800"><%= player.nickname %></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <% if room.host_player_id == player.id %>
+                <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">Host</span>
+              <% end %>
+              <% if current_player&.id == player.id %>
+                <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">You</span>
               <% end %>
             </div>
-          <% else %>
-            <p class="text-slate-600">No clues submitted yet.</p>
-          <% end %>
-        </div>
-        <%# end of submitted clues section %>
-        <% if @current_round.arranging? %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <!-- Room settings -->
+    <div class="mb-6 rounded-xl bg-slate-50 p-4">
+      <h2 class="mb-2 text-lg font-semibold text-slate-800">Room Settings</h2>
+      <p class="text-slate-700">Cards per player: <%= room.cards_per_player %></p>
+    </div>
+  </aside>
+  <!-- Center-Right Gameplay Area -->
+  <main class="lg:col-span-3 bg-amber-700 p-6 shadow-lg rounded-2xl">
+    <% if room.lobby? %>
+      <!-- Start Round / waiting -->
+      <div class="rounded-xl bg-slate-50 p-4">
+        <% if room.host_player_id == current_player&.id %>
+          <p class="mb-4 text-slate-700">When everyone has joined, start the round.</p>
+          <%= button_to "Start Round",
+                  start_round_room_path(room.code),
+                  method: :post,
+                  class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
+        <% else %>
+          <p class="text-slate-700">Waiting for the host to start the round...</p>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Entire gameplay area -->
+      <div class="space-y-4">
+        <% if @current_round %>
           <div class="rounded-xl bg-slate-50 p-4">
-            <h2 class="mb-2 text-lg font-semibold text-slate-800">Arranging</h2>
-            <% if current_player&.id == room.host_player_id %>
-              <p class="mb-4 text-slate-700">Drag the submitted cards into ascending order (1 to 100, top-down), then press Done.</p>
-              <div
-        class="space-y-3"
-        data-controller="sortable-list"
-        data-sortable-list-url-value="<%= update_order_round_path(@current_round) %>"
-      >
-                <% @current_round.submitted_assignments.each do |assignment| %>
-                  <div
-            data-assignment-id="<%= assignment.id %>"
-            class="cursor-grab select-none rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm active:cursor-grabbing"
-          >
-                    <div class="flex items-center gap-2">
-                      <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                      <span class="font-medium text-slate-800">
-                        <%= assignment.player.nickname %>
-                      </span>
-                    </div>
-                    <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
-                  </div>
-                <% end %>
-              </div>
-              <div class="mt-4">
-                <%= button_to "Done",
-              done_arranging_round_path(@current_round),
-              method: :post,
-              class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
-              </div>
-            <% else %>
-              <p class="mb-4 text-slate-600">Host is arranging the cards...</p>
+            <h2 class="mb-2 text-lg font-semibold text-slate-800">Current Round</h2>
+            <p class="text-slate-700"><strong>Theme:</strong> <%= @current_round.theme %></p>
+            <p class="text-slate-700"><strong>Phase:</strong> <%= @current_round.phase.humanize %></p>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-4">
+            <h2 class="mb-3 text-lg font-semibold text-slate-800">Submitted Clues</h2>
+            <% if @current_round.submitted_assignments.any? %>
               <div class="space-y-3">
                 <% @current_round.submitted_assignments.each do |assignment| %>
-                  <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                  <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
                     <div class="flex items-center gap-2">
                       <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
                       <span class="font-medium text-slate-800">
@@ -124,78 +85,131 @@
                   </div>
                 <% end %>
               </div>
+            <% else %>
+              <p class="text-slate-600">No clues submitted yet.</p>
             <% end %>
           </div>
-        <% end %>
-        <% if @current_round.revealed? %>
-          <div class="rounded-xl bg-slate-50 p-4">
-            <h2 class="mb-3 text-lg font-semibold text-slate-800">Result</h2>
-            <% if @current_round.successful? %>
-              <p class="mb-4 rounded-xl bg-green-100 px-4 py-3 font-semibold text-green-800">
-                Success! The order was correct.
-              </p>
-            <% else %>
-              <p class="mb-4 rounded-xl bg-red-100 px-4 py-3 font-semibold text-red-800">
-                Failure! The order was not correct.
-              </p>
-            <% end %>
-            <div class="space-y-3">
-              <% @current_round.round_assignments.order(:display_order).each do |assignment| %>
-                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                  <div class="flex items-center gap-2">
-                    <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                    <span class="font-medium text-slate-800">
-                      <%= assignment.player.nickname %>
-                    </span>
-                  </div>
-                  <p class="mt-2 text-slate-700">
-                    <strong>Clue:</strong> <%= assignment.clue_text %>
-                  </p>
-                  <p class="mt-1 text-slate-700">
-                    <strong>Number:</strong> <%= assignment.secret_number %>
-                  </p>
+          <%# end of submitted clues section %>
+          <% if @current_round.arranging? %>
+            <div class="rounded-xl bg-slate-50 p-4">
+              <h2 class="mb-2 text-lg font-semibold text-slate-800">Arranging</h2>
+              <% if current_player&.id == room.host_player_id %>
+                <p class="mb-4 text-slate-700">Drag the submitted cards into ascending order (1 to 100, top-down), then press Done.</p>
+                <div
+          class="space-y-3"
+          data-controller="sortable-list"
+          data-sortable-list-url-value="<%= update_order_round_path(@current_round) %>"
+        >
+                  <% @current_round.submitted_assignments.each do |assignment| %>
+                    <div
+              data-assignment-id="<%= assignment.id %>"
+              class="cursor-grab select-none rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm active:cursor-grabbing"
+            >
+                      <div class="flex items-center gap-2">
+                        <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
+                        <span class="font-medium text-slate-800">
+                          <%= assignment.player.nickname %>
+                        </span>
+                      </div>
+                      <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="mt-4">
+                  <%= button_to "Done",
+                done_arranging_round_path(@current_round),
+                method: :post,
+                class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
+                </div>
+              <% else %>
+                <p class="mb-4 text-slate-600">Host is arranging the cards...</p>
+                <div class="space-y-3">
+                  <% @current_round.submitted_assignments.each do |assignment| %>
+                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                      <div class="flex items-center gap-2">
+                        <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
+                        <span class="font-medium text-slate-800">
+                          <%= assignment.player.nickname %>
+                        </span>
+                      </div>
+                      <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
+                    </div>
+                  <% end %>
                 </div>
               <% end %>
             </div>
-          </div>
-        <% end %>
-        <% current_assignment = @current_round.current_assignment %>
-        <% if current_assignment && @current_round.turn? %>
-          <div class="rounded-xl bg-slate-50 p-4">
-            <h2 class="mb-2 text-lg font-semibold text-slate-800">Current Turn</h2>
-            <p class="text-slate-700">
-              <strong>Player:</strong> <%= current_assignment.player.nickname %>
-            </p>
-            <% if @current_round.turn? %>
-              <% if current_player&.id == current_assignment.player_id %>
-                <p class="mt-3 text-slate-700">
-                  Your secret number for this card:
-                  <span class="font-bold text-slate-900"><%= current_assignment.secret_number %></span>
+          <% end %>
+          <% if @current_round.revealed? %>
+            <div class="rounded-xl bg-slate-50 p-4">
+              <h2 class="mb-3 text-lg font-semibold text-slate-800">Result</h2>
+              <% if @current_round.successful? %>
+                <p class="mb-4 rounded-xl bg-green-100 px-4 py-3 font-semibold text-green-800">
+                  Success! The order was correct.
                 </p>
-                <div class="mt-4">
-                  <%= form_with url: submit_clue_round_path(@current_round), method: :post, local: true, class: "space-y-3" do |form| %>
-                    <div>
-                      <%= form.label :clue_text, "Your clue", class: "mb-1 block text-sm font-medium text-slate-700" %>
-                      <%= form.text_field :clue_text, required: true, class: "w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none" %>
-                    </div>
-                    <div class="flex gap-3">
-                      <%= form.submit "Submit Clue", class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
-                    <% end %>
-                    <%= button_to "Go Later",
-                go_later_round_path(@current_round),
-                method: :post,
-                class: "rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-300" %>
-                  </div>
-                </div>
               <% else %>
-                <p class="mt-3 text-slate-600">Waiting for the current player to submit a clue...</p>
+                <p class="mb-4 rounded-xl bg-red-100 px-4 py-3 font-semibold text-red-800">
+                  Failure! The order was not correct.
+                </p>
               <% end %>
-            <% elsif @current_round.arranging? %>
-              <p class="mt-3 text-slate-600">Waiting for the host to arrange the cards...</p>
-            <% end %>
-          </div>
+              <div class="space-y-3">
+                <% @current_round.round_assignments.order(:display_order).each do |assignment| %>
+                  <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
+                      <span class="font-medium text-slate-800">
+                        <%= assignment.player.nickname %>
+                      </span>
+                    </div>
+                    <p class="mt-2 text-slate-700">
+                      <strong>Clue:</strong> <%= assignment.clue_text %>
+                    </p>
+                    <p class="mt-1 text-slate-700">
+                      <strong>Number:</strong> <%= assignment.secret_number %>
+                    </p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <% current_assignment = @current_round.current_assignment %>
+          <% if current_assignment && @current_round.turn? %>
+            <div class="rounded-xl bg-slate-50 p-4">
+              <h2 class="mb-2 text-lg font-semibold text-slate-800">Current Turn</h2>
+              <p class="text-slate-700">
+                <strong>Player:</strong> <%= current_assignment.player.nickname %>
+              </p>
+              <% if @current_round.turn? %>
+                <% if current_player&.id == current_assignment.player_id %>
+                  <p class="mt-3 text-slate-700">
+                    Your secret number for this card:
+                    <span class="font-bold text-slate-900"><%= current_assignment.secret_number %></span>
+                  </p>
+                  <div class="mt-4">
+                    <%= form_with url: submit_clue_round_path(@current_round), method: :post, local: true, class: "space-y-3" do |form| %>
+                      <div>
+                        <%= form.label :clue_text, "Your clue", class: "mb-1 block text-sm font-medium text-slate-700" %>
+                        <%= form.text_field :clue_text, required: true, class: "w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none" %>
+                      </div>
+                      <div class="flex gap-3">
+                        <%= form.submit "Submit Clue", class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
+                      <% end %>
+                      <%= button_to "Go Later",
+                  go_later_round_path(@current_round),
+                  method: :post,
+                  class: "rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-300" %>
+                    </div>
+                  </div>
+                <% else %>
+                  <p class="mt-3 text-slate-600">Waiting for the current player to submit a clue...</p>
+                <% end %>
+              <% elsif @current_round.arranging? %>
+                <p class="mt-3 text-slate-600">Waiting for the host to arrange the cards...</p>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
+  </main>
 </div>
+<%# </div> %>

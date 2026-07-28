@@ -1,5 +1,6 @@
-<div class="min-h-screen bg-slate-100 px-4 py-8">
+<div class="bg-slate-100 px-4 py-8 rounded-2xl">
   <div id="room">
     <%= render "room", room: @room %>
   </div>
 </div>
+<!-- I removed the "min-h-screen" class from the main container in the application layout, which was causing the content to stretch to fill the entire height of the viewport. This change allows the content to be centered and sized according to its own dimensions, rather than being forced to occupy the full height of the screen. -->
