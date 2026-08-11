@@ -3,50 +3,50 @@
 <%# <div class="mx-auto max-w-7xl"> %>
 <div class="max-w-7xl lg:grid lg:grid-cols-4 lg:gap-4">
   <!-- Left Sidebar -->
-  <aside class="lg:col-span-1 bg-amber-300 p-6 shadow-lg rounded-2xl">
-    <!-- Room header -->
-    <div class="mb-6 flex flex-col items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800">Room <%= room.code %></h1>
-        <!-- <p class="text-sm text-slate-600">
+  <aside class="lg:col-span-1 bg-blue-300 p-6 shadow-lg rounded-2xl">
+    <!-- Room Info -->
+    <h2 class="mb-2 text-lg font-semibold text-slate-800">Room Info</h2>
+    <div class="mb-6 rounded-xl bg-slate-50 p-4">
+      <!-- Room header -->
+      <div class="mb-6 flex flex-col items-center justify-between text-center">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800">Room <%= room.code %></h1>
+          <!-- <p class="text-sm text-slate-600">
             Status: <%= room.status.humanize %>
           </p>
           -->
+        </div>
+        <% if room.host_player_id == current_player&.id %>
+          <span class="rounded-full bg-slate-800 px-3 py-1 text-sm font-semibold text-white">Host</span>
+        <% end %>
       </div>
-      <% if room.host_player_id == current_player&.id %>
-        <span class="rounded-full bg-slate-800 px-3 py-1 text-sm font-semibold text-white">Host</span>
-      <% end %>
+      <p class="text-slate-700 font-medium text-center"><%= room.cards_per_player %> <%= room.cards_per_player > 1 ? 'cards' : 'card' %> per player</p>
     </div>
     <!-- Players -->
-    <div class="mb-6 rounded-xl bg-slate-50 p-4">
-      <h2 class="mb-3 text-lg font-semibold text-slate-800">Players</h2>
+    <h2 class="mb-3 text-lg font-semibold text-slate-800">Players</h2>
+    <div class="mb-6 rounded-xl bg-slate-200 p-4">
       <div class="space-y-3">
         <% room.players.order(:created_at).each do |player| %>
-          <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3">
             <div class="flex items-center gap-3">
               <span class="text-lg font-bold <%= diamond_color_class(player.color) %>">◆</span>
               <span class="font-medium text-slate-800"><%= player.nickname %></span>
             </div>
-            <div class="flex items-center gap-2">
-              <% if room.host_player_id == player.id %>
-                <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">Host</span>
-              <% end %>
+            <div class="flex flex-wrap items-center gap-2">
               <% if current_player&.id == player.id %>
-                <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">You</span>
+                <span class="rounded-full bg-green-300 px-2 py-1 text-xs font-semibold text-green-800">You</span>
+              <% end %>
+              <% if room.host_player_id == player.id %>
+                <span class="rounded-full bg-pink-200 px-2 py-1 text-xs font-semibold text-purple-700">Host</span>
               <% end %>
             </div>
           </div>
         <% end %>
       </div>
     </div>
-    <!-- Room settings -->
-    <div class="mb-6 rounded-xl bg-slate-50 p-4">
-      <h2 class="mb-2 text-lg font-semibold text-slate-800">Room Settings</h2>
-      <p class="text-slate-700">Cards per player: <%= room.cards_per_player %></p>
-    </div>
   </aside>
   <!-- Center-Right Gameplay Area -->
-  <main class="lg:col-span-3 bg-amber-700 p-6 shadow-lg rounded-2xl">
+  <main class="lg:col-span-3 bg-indigo-300 p-6 shadow-lg rounded-2xl">
     <% if room.lobby? %>
       <!-- Start Round / waiting -->
       <div class="rounded-xl bg-slate-50 p-4">
@@ -64,110 +64,243 @@
       <!-- Entire gameplay area -->
       <div class="space-y-4">
         <% if @current_round %>
-          <div class="rounded-xl bg-slate-50 p-4">
-            <h2 class="mb-2 text-lg font-semibold text-slate-800">Current Round</h2>
-            <p class="text-slate-700"><strong>Theme:</strong> <%= @current_round.theme %></p>
-            <p class="text-slate-700"><strong>Phase:</strong> <%= @current_round.phase.humanize %></p>
+          <div class="flex items-center justify-center gap-3 text-3xl">
+            <span class="font-medium text-slate-800">
+              Theme →
+            </span>
+            <div class="rounded-xl bg-slate-100 px-4 py-3">
+              <span class="font-semibold text-slate-900">
+                <%= @current_round.theme %>
+              </span>
+            </div>
           </div>
-          <div class="rounded-xl bg-slate-50 p-4">
-            <h2 class="mb-3 text-lg font-semibold text-slate-800">Submitted Clues</h2>
-            <% if @current_round.submitted_assignments.any? %>
-              <div class="space-y-3">
-                <% @current_round.submitted_assignments.each do |assignment| %>
-                  <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                    <div class="flex items-center gap-2">
-                      <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                      <span class="font-medium text-slate-800">
-                        <%= assignment.player.nickname %>
-                      </span>
+          <% if @current_round.turn? %>
+            <div class="rounded-xl bg-slate-50 p-4">
+              <h2 class="mb-3 text-lg font-semibold text-slate-800">Submitted Clues</h2>
+              <% if @current_round.submitted_assignments.any? %>
+                <div class="flex flex-wrap gap-4">
+                  <% @current_round.submitted_assignments.each do |assignment| %>
+                    <div class="w-36 h-48 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                      <div class="flex h-full flex-col">
+                        <!-- Header -->
+                        <div class="flex items-center gap-2">
+                          <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
+                            ◆
+                          </span>
+                          <span class="truncate text-sm font-semibold text-slate-700">
+                            <%= assignment.player.nickname %>
+                          </span>
+                        </div>
+                        <!-- Clue -->
+                        <div class="flex flex-1 items-center justify-center px-1">
+                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
+                            <%= assignment.clue_text %>
+                          </p>
+                        </div>
+                        <!-- Footer (empty for now) -->
+                        <div class="h-6">
+                          <!-- Future: revealed number, badges, etc. -->
+                        </div>
+                      </div>
                     </div>
-                    <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
+                  <% end %>
+                </div>
+                <!-- 1 to 100 and the Arrow -->
+                <div class="mt-4 flex items-center gap-3">
+                  <!-- 1 -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                    1
                   </div>
-                <% end %>
-              </div>
-            <% else %>
-              <p class="text-slate-600">No clues submitted yet.</p>
-            <% end %>
-          </div>
+                  <!-- Arrow pointing both LEFT and RIGHT -->
+                  <div class="flex flex-1 items-center">
+                    <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
+                    <div class="h-px flex-1 bg-slate-500"></div>
+                    <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
+                  </div>
+                  <!-- 100 -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                    100
+                  </div>
+                </div>
+              <% else %>
+                <p class="text-slate-600">No clues submitted yet.</p>
+              <% end %>
+            </div>
+          <% end %>
           <%# end of submitted clues section %>
           <% if @current_round.arranging? %>
             <div class="rounded-xl bg-slate-50 p-4">
               <h2 class="mb-2 text-lg font-semibold text-slate-800">Arranging</h2>
               <% if current_player&.id == room.host_player_id %>
-                <p class="mb-4 text-slate-700">Drag the submitted cards into ascending order (1 to 100, top-down), then press Done.</p>
+                <p class="mb-4 text-slate-700">Drag the submitted cards into ascending order (1 to 100, left-to-right), then press Done.</p>
                 <div
-          class="space-y-3"
+          class="flex flex-wrap gap-4"
           data-controller="sortable-list"
           data-sortable-list-url-value="<%= update_order_round_path(@current_round) %>"
         >
                   <% @current_round.submitted_assignments.each do |assignment| %>
                     <div
               data-assignment-id="<%= assignment.id %>"
-              class="cursor-grab select-none rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm active:cursor-grabbing"
+              class="cursor-grab select-none w-36 h-48 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md active:cursor-grabbing"
             >
-                      <div class="flex items-center gap-2">
-                        <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                        <span class="font-medium text-slate-800">
-                          <%= assignment.player.nickname %>
-                        </span>
+                      <div class="flex h-full flex-col">
+                        <!-- Header -->
+                        <div class="flex items-center gap-2">
+                          <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
+                            ◆
+                          </span>
+                          <span class="truncate text-sm font-semibold text-slate-700">
+                            <%= assignment.player.nickname %>
+                          </span>
+                        </div>
+                        <!-- Clue -->
+                        <div class="flex flex-1 items-center justify-center px-1">
+                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
+                            <%= assignment.clue_text %>
+                          </p>
+                        </div>
+                        <!-- Footer (empty for now) -->
+                        <div class="h-6">
+                          <!-- Future: revealed number, badges, etc. -->
+                        </div>
                       </div>
-                      <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
                     </div>
                   <% end %>
                 </div>
-                <div class="mt-4">
+                <div class="mt-4 flex items-center gap-3">
+                  <!-- 1 -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                    1
+                  </div>
+                  <!-- Arrow pointing LEFT -->
+                  <div class="flex flex-1 items-center">
+                    <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
+                    <div class="h-px flex-1 bg-slate-500"></div>
+                  </div>
+                  <!-- Done -->
                   <%= button_to "Done",
-                done_arranging_round_path(@current_round),
-                method: :post,
-                class: "rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
+        done_arranging_round_path(@current_round),
+        method: :post,
+        class: "shrink-0 rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
+                  <!-- Arrow pointing RIGHT -->
+                  <div class="flex flex-1 items-center">
+                    <div class="h-px flex-1 bg-slate-500"></div>
+                    <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
+                  </div>
+                  <!-- 100 -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                    100
+                  </div>
                 </div>
               <% else %>
                 <p class="mb-4 text-slate-600">Host is arranging the cards...</p>
-                <div class="space-y-3">
+                <div class="flex flex-wrap gap-4">
                   <% @current_round.submitted_assignments.each do |assignment| %>
-                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                      <div class="flex items-center gap-2">
-                        <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                        <span class="font-medium text-slate-800">
-                          <%= assignment.player.nickname %>
-                        </span>
+                    <div class="w-36 h-48 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                      <div class="flex h-full flex-col">
+                        <!-- Header -->
+                        <div class="flex items-center gap-2">
+                          <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
+                            ◆
+                          </span>
+                          <span class="truncate text-sm font-semibold text-slate-700">
+                            <%= assignment.player.nickname %>
+                          </span>
+                        </div>
+                        <!-- Clue -->
+                        <div class="flex flex-1 items-center justify-center px-1">
+                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
+                            <%= assignment.clue_text %>
+                          </p>
+                        </div>
+                        <!-- Footer (empty for now) -->
+                        <div class="h-6">
+                          <!-- Future: revealed number, badges, etc. -->
+                        </div>
                       </div>
-                      <p class="mt-2 text-slate-700"><%= assignment.clue_text %></p>
                     </div>
                   <% end %>
+                </div>
+                <!-- 1 to 100 and the Arrow -->
+                <div class="mt-4 flex items-center gap-3">
+                  <!-- 1 -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                    1
+                  </div>
+                  <!-- Arrow pointing both LEFT and RIGHT -->
+                  <div class="flex flex-1 items-center">
+                    <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
+                    <div class="h-px flex-1 bg-slate-500"></div>
+                    <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
+                  </div>
+                  <!-- 100 -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                    100
+                  </div>
                 </div>
               <% end %>
             </div>
           <% end %>
           <% if @current_round.revealed? %>
             <div class="rounded-xl bg-slate-50 p-4">
-              <h2 class="mb-3 text-lg font-semibold text-slate-800">Result</h2>
-              <% if @current_round.successful? %>
-                <p class="mb-4 rounded-xl bg-green-100 px-4 py-3 font-semibold text-green-800">
-                  Success! The order was correct.
-                </p>
-              <% else %>
-                <p class="mb-4 rounded-xl bg-red-100 px-4 py-3 font-semibold text-red-800">
-                  Failure! The order was not correct.
-                </p>
-              <% end %>
-              <div class="space-y-3">
+              <div class="flex items-center justify-center gap-3">
+                <h2 class="mb-3 text-lg font-semibold text-slate-800">Result:</h2>
+                <% if @current_round.successful? %>
+                  <p class="mb-4 rounded-xl bg-green-100 px-4 py-3 font-semibold text-green-800">
+                    Success! The order was correct.
+                  </p>
+                <% else %>
+                  <p class="mb-4 rounded-xl bg-red-100 px-4 py-3 font-semibold text-red-800">
+                    Failure! The order was not correct.
+                  </p>
+                <% end %>
+              </div>
+              <div class="flex flex-wrap gap-4">
                 <% @current_round.round_assignments.order(:display_order).each do |assignment| %>
-                  <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                    <div class="flex items-center gap-2">
-                      <span class="text-lg font-bold <%= diamond_color_class(assignment.player.color) %>">◆</span>
-                      <span class="font-medium text-slate-800">
-                        <%= assignment.player.nickname %>
-                      </span>
+                  <div class="w-36 h-48 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                    <div class="flex h-full flex-col">
+                      <!-- Header -->
+                      <div class="flex items-center gap-2">
+                        <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
+                          ◆
+                        </span>
+                        <span class="truncate text-sm font-semibold text-slate-700">
+                          <%= assignment.player.nickname %>
+                        </span>
+                      </div>
+                      <!-- Clue -->
+                      <div class="flex flex-1 items-center justify-center px-1">
+                        <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
+                          <%= assignment.clue_text %>
+                        </p>
+                      </div>
+                      <!-- Footer (empty for now) -->
+                      <div class="h-6">
+                        <!-- Future: revealed number, badges, etc. -->
+                      </div>
+                      <p class="mt-1 text-slate-700">
+                        <strong>Number: <%= assignment.secret_number %></strong>
+                      </p>
                     </div>
-                    <p class="mt-2 text-slate-700">
-                      <strong>Clue:</strong> <%= assignment.clue_text %>
-                    </p>
-                    <p class="mt-1 text-slate-700">
-                      <strong>Number:</strong> <%= assignment.secret_number %>
-                    </p>
                   </div>
                 <% end %>
+              </div>
+              <!-- 1 to 100 and the Arrow -->
+              <div class="mt-4 flex items-center gap-3">
+                <!-- 1 -->
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                  1
+                </div>
+                <!-- Arrow pointing both LEFT and RIGHT -->
+                <div class="flex flex-1 items-center">
+                  <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
+                  <div class="h-px flex-1 bg-slate-500"></div>
+                  <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
+                </div>
+                <!-- 100 -->
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
+                  100
+                </div>
               </div>
             </div>
           <% end %>

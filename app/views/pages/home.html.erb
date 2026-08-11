@@ -1,34 +1,40 @@
-<div class="min-h-screen bg-slate-100 px-4 py-10">
+<div class="bg-slate-400 px-8 py-8 rounded-2xl">
   <div class="mx-auto max-w-xl rounded-2xl bg-white p-8 shadow-lg">
-    <h1 class="mb-2 text-3xl font-bold text-slate-800">Ito Rainbow</h1>
-    <p class="mb-8 text-slate-600">Create a room or join an existing one.</p>
-    <div class="mb-8">
-      <h2 class="mb-3 text-lg font-semibold text-slate-800">Create Room</h2>
-      <%= form_with url: rooms_path, method: :post, local: true, class: "space-y-4" do |form| %>
-        <div>
-          <%= form.label :nickname, "Your nickname", class: "mb-1 block text-sm font-medium text-slate-700" %>
-          <%= form.text_field :nickname, required: true, class: "w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none" %>
-        </div>
-        <div>
-          <%= form.label :cards_per_player, "Cards per player", class: "mb-1 block text-sm font-medium text-slate-700" %>
-          <%= form.select :cards_per_player, options_for_select([[1, 1], [2, 2], [3, 3]], 1), {}, class: "w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none" %>
-        </div>
-        <%= form.submit "Create Room", class: "w-full rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
-      <% end %>
-    </div>
-    <div data-controller="join-room">
-      <h2 class="mb-3 text-lg font-semibold text-slate-800">Join Room</h2>
-      <form
+    <%# <h1 class="mb-2 text-3xl font-bold text-slate-800 text-center">Ito Rainbow</h1> %>
+    <h1 class="text-4xl text-center font-bold bg-gradient-to-r from-green-500 via-blue-500 to-red-500 bg-clip-text text-transparent">
+      Ito Rainbow
+    </h1>
+    <p class="my-8 text-slate-600 text-center">Create a room - OR - Join an existing one.</p>
+    <div class="h-0.5 w-full bg-slate-400 rounded-2xl"></div>
+    <div class="mt-8 flex gap-6">
+      <div class="px-4 py-3">
+        <h2 class="mb-3 text-lg font-semibold text-slate-800">Create Room</h2>
+        <%= form_with url: rooms_path, method: :post, local: true, class: "space-y-4" do |form| %>
+          <div>
+            <%= form.label :nickname, "Your nickname", class: "mb-1 block text-sm font-medium text-slate-700" %>
+            <%= form.text_field :nickname, required: true, class: "w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none" %>
+          </div>
+          <div>
+            <%= form.label :cards_per_player, "Cards per player", class: "mb-1 block text-sm font-medium text-slate-700" %>
+            <%= form.select :cards_per_player, options_for_select([[1, 1], [2, 2], [3, 3]], 1), {}, class: "w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none" %>
+          </div>
+          <%= form.submit "Create Room", class: "w-full rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700" %>
+        <% end %>
+      </div>
+      <div class="w-1 self-stretch bg-slate-400 rounded-2xl"></div>
+      <div data-controller="join-room" class="px-4 py-3">
+        <h2 class="mb-3 text-lg font-semibold text-slate-800">Join Room</h2>
+        <form
     action="#"
     method="post"
     class="space-y-4"
     data-join-room-target="form"
     data-action="submit->join-room#submit"
-        >
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <div>
-          <label for="room_code" class="mb-1 block text-sm font-medium text-slate-700">Room code</label>
-          <input
+          >
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <div>
+            <label for="room_code" class="mb-1 block text-sm font-medium text-slate-700">Room code</label>
+            <input
         id="room_code"
         name="room_code"
         type="text"
@@ -36,24 +42,25 @@
         data-join-room-target="roomCode"
         class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none"
       >
-          </div>
-          <div>
-            <label for="join_nickname" class="mb-1 block text-sm font-medium text-slate-700">Your nickname</label>
-            <input
+            </div>
+            <div>
+              <label for="join_nickname" class="mb-1 block text-sm font-medium text-slate-700">Your nickname</label>
+              <input
         id="join_nickname"
         name="nickname"
         type="text"
         required
         class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none"
       >
-            </div>
-            <button
+              </div>
+              <button
       type="submit"
-      class="w-full rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-300"
+      class="w-full rounded-xl bg-slate-300 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-400"
     >
-              Join Room
-            </button>
-          </form>
+                Join Room
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
