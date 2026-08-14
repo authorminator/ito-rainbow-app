@@ -1,29 +1,27 @@
 class RoundsController < ApplicationController
   THEMES = [
-    "Scary things",
-    "Delicious foods",
-    "Strong animals",
-    "Embarrassing moments",
-    "Painful things",
-    "Expensive things",
-    "Smelly things",
-    "Cute things"
+    'Scary things',
+    'Delicious foods',
+    'Strong animals',
+    'Embarrassing moments',
+    'Painful things',
+    'Expensive things',
+    'Smelly things',
+    'Cute things'
   ].freeze
 
   def create
     room = Room.includes(:players).find_by!(code: params[:code])
 
     unless current_player&.id == room.host_player_id
-      redirect_to room_path(room.code), alert: "Only the host can start the round." and return
+      redirect_to room_path(room.code), alert: 'Only the host can start the round.' and return
     end
 
-    if room.players.count < 2
-      redirect_to room_path(room.code), alert: "At least 2 players are required." and return
-    end
+    redirect_to room_path(room.code), alert: 'At least 2 players are required.' and return if room.players.count < 2
 
     total_cards = room.players.count * room.cards_per_player
     if total_cards > 8
-      redirect_to room_path(room.code), alert: "Too many total cards for one round. Reduce cards per player." and return
+      redirect_to room_path(room.code), alert: 'Too many total cards for one round. Reduce cards per player.' and return
     end
 
     ActiveRecord::Base.transaction do
@@ -62,27 +60,23 @@ class RoundsController < ApplicationController
       room.update!(status: :in_round)
     end
 
-    redirect_to room_path(room.code), notice: "Round started."
+    redirect_to room_path(room.code), notice: 'Round started.'
   end
 
   def submit_clue
-  round = Round.find(params[:id])
-  room = round.room
-  assignment = round.current_assignment
+    round = Round.find(params[:id])
+    room = round.room
+    assignment = round.current_assignment
 
-    unless round.turn?
-      redirect_to room_path(room.code), alert: "It is not clue submission time." and return
-    end
+    redirect_to room_path(room.code), alert: 'It is not clue submission time.' and return unless round.turn?
 
     unless assignment && current_player&.id == assignment.player_id
-      redirect_to room_path(room.code), alert: "It is not your turn." and return
+      redirect_to room_path(room.code), alert: 'It is not your turn.' and return
     end
 
     clue_text = params[:clue_text].to_s.strip
 
-    if clue_text.blank?
-      redirect_to room_path(room.code), alert: "Clue cannot be blank." and return
-    end
+    redirect_to room_path(room.code), alert: 'Clue cannot be blank.' and return if clue_text.blank?
 
     assignment.update!(
       clue_text: clue_text,
@@ -91,7 +85,7 @@ class RoundsController < ApplicationController
 
     round.update!(phase: :arranging)
 
-    redirect_to room_path(room.code), notice: "Clue submitted."
+    redirect_to room_path(room.code), notice: 'Clue submitted.'
   end
 
   def go_later
@@ -99,30 +93,26 @@ class RoundsController < ApplicationController
     room = round.room
     assignment = round.current_assignment
 
-    unless round.turn?
-      redirect_to room_path(room.code), alert: "It is not clue submission time." and return
-    end
+    redirect_to room_path(room.code), alert: 'It is not clue submission time.' and return unless round.turn?
 
     unless assignment && current_player&.id == assignment.player_id
-      redirect_to room_path(room.code), alert: "It is not your turn." and return
+      redirect_to room_path(room.code), alert: 'It is not your turn.' and return
     end
 
     max_position = round.round_assignments.maximum(:turn_position) || 0
     assignment.update!(turn_position: max_position + 1)
 
-    redirect_to room_path(room.code), notice: "Your turn was moved to later."
+    redirect_to room_path(room.code), notice: 'Your turn was moved to later.'
   end
 
   def done_arranging
     round = Round.find(params[:id])
     room = round.room
 
-    unless round.arranging?
-      redirect_to room_path(room.code), alert: "It is not arranging time." and return
-    end
+    redirect_to room_path(room.code), alert: 'It is not arranging time.' and return unless round.arranging?
 
     unless current_player&.id == room.host_player_id
-      redirect_to room_path(room.code), alert: "Only the host can do that." and return
+      redirect_to room_path(room.code), alert: 'Only the host can do that.' and return
     end
 
     if round.current_assignment.present?
@@ -131,20 +121,16 @@ class RoundsController < ApplicationController
       round.update!(phase: :revealed)
     end
 
-    redirect_to room_path(room.code), notice: "Arrangement confirmed."
+    redirect_to room_path(room.code), notice: 'Arrangement confirmed.'
   end
 
   def update_order
     round = Round.find(params[:id])
     room = round.room
 
-    unless round.arranging?
-      head :unprocessable_entity and return
-    end
+    head :unprocessable_entity and return unless round.arranging?
 
-    unless current_player&.id == room.host_player_id
-      head :forbidden and return
-    end
+    head :forbidden and return unless current_player&.id == room.host_player_id
 
     ordered_ids = params[:ordered_ids] || []
 

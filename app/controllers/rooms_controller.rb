@@ -16,9 +16,7 @@ class RoomsController < ApplicationController
       cards_per_player: cards_per_player
     )
 
-    if nickname.blank?
-      redirect_to root_path, alert: "Nickname can't be blank." and return
-    end
+    redirect_to root_path, alert: "Nickname can't be blank." and return if nickname.blank?
 
     ActiveRecord::Base.transaction do
       room.save!
@@ -32,34 +30,26 @@ class RoomsController < ApplicationController
       room.update!(host_player_id: player.id)
 
       set_current_player(player)
-      redirect_to room_path(room.code), notice: "Room created."
+      redirect_to room_path(room.code), notice: 'Room created.'
     end
   rescue ActiveRecord::RecordInvalid
-    redirect_to root_path, alert: "Could not create room."
+    redirect_to root_path, alert: 'Could not create room.'
   end
 
   def join
     room = Room.find_by(code: params[:code])
 
-    unless room
-      redirect_to root_path, alert: "Room not found." and return
-    end
+    redirect_to root_path, alert: 'Room not found.' and return unless room
 
     nickname = params[:nickname].to_s.strip
 
-    if nickname.blank?
-      redirect_to root_path, alert: "Nickname can't be blank." and return
-    end
+    redirect_to root_path, alert: "Nickname can't be blank." and return if nickname.blank?
 
-    if current_player && current_player.room_id == room.id
-      redirect_to room_path(room.code) and return
-    end
+    redirect_to room_path(room.code) and return if current_player && current_player.room_id == room.id
 
     next_color = next_available_color(room)
 
-    if next_color.nil?
-      redirect_to root_path, alert: "Room is full." and return
-    end
+    redirect_to root_path, alert: 'Room is full.' and return if next_color.nil?
 
     player = room.players.create!(
       nickname: nickname,
@@ -68,9 +58,9 @@ class RoomsController < ApplicationController
     )
 
     set_current_player(player)
-    redirect_to room_path(room.code), notice: "Joined room."
+    redirect_to room_path(room.code), notice: 'Joined room.'
   rescue ActiveRecord::RecordInvalid
-    redirect_to root_path, alert: "Could not join room."
+    redirect_to root_path, alert: 'Could not join room.'
   end
 
   private
