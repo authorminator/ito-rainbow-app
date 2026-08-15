@@ -6,7 +6,7 @@
   <aside class="lg:col-span-1 bg-blue-300 p-6 shadow-lg rounded-2xl">
     <!-- Room Info -->
     <h2 class="mb-2 text-lg font-semibold text-slate-800">Room Info</h2>
-    <div class="mb-6 rounded-xl bg-slate-50 p-4">
+    <div class="mb-6 rounded-xl bg-slate-100 p-4">
       <!-- Room header -->
       <div class="mb-6 flex flex-col items-center justify-between text-center">
         <div>
@@ -49,7 +49,7 @@
   <main class="lg:col-span-3 bg-indigo-300 p-6 shadow-lg rounded-2xl">
     <% if room.lobby? %>
       <!-- Start Round / waiting -->
-      <div class="rounded-xl bg-slate-50 p-4">
+      <div class="rounded-xl bg-slate-100 p-4">
         <% if room.host_player_id == current_player&.id %>
           <p class="mb-4 text-slate-700">When everyone has joined, start the round.</p>
           <%= button_to "Start Round",
@@ -75,61 +75,25 @@
             </div>
           </div>
           <% if @current_round.turn? %>
-            <div class="rounded-xl bg-slate-50 p-4">
+            <div class="rounded-xl bg-slate-100 p-4">
               <h2 class="mb-3 text-lg font-semibold text-slate-800">Submitted Clues</h2>
               <% if @current_round.submitted_assignments.any? %>
                 <div class="flex flex-wrap gap-4">
                   <% @current_round.submitted_assignments.each do |assignment| %>
-                    <div class="w-36 h-48 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                      <div class="flex h-full flex-col">
-                        <!-- Header -->
-                        <div class="flex items-center gap-2">
-                          <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
-                            ◆
-                          </span>
-                          <span class="truncate text-sm font-semibold text-slate-700">
-                            <%= assignment.player.nickname %>
-                          </span>
-                        </div>
-                        <!-- Clue -->
-                        <div class="flex flex-1 items-center justify-center px-1">
-                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
-                            <%= assignment.clue_text %>
-                          </p>
-                        </div>
-                        <!-- Footer (empty for now) -->
-                        <div class="h-6">
-                          <!-- Future: revealed number, badges, etc. -->
-                        </div>
-                      </div>
-                    </div>
+                    <%= render "assignment_card", assignment: assignment %>
                   <% end %>
                 </div>
                 <!-- 1 to 100 and the Arrow -->
-                <div class="mt-4 flex items-center gap-3">
-                  <!-- 1 -->
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
-                    1
-                  </div>
-                  <!-- Arrow pointing both LEFT and RIGHT -->
-                  <div class="flex flex-1 items-center">
-                    <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
-                    <div class="h-px flex-1 bg-slate-500"></div>
-                    <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
-                  </div>
-                  <!-- 100 -->
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
-                    100
-                  </div>
-                </div>
+                <%= render "arrows" %>
               <% else %>
                 <p class="text-slate-600">No clues submitted yet.</p>
+                <%= render "arrows" %>
               <% end %>
             </div>
           <% end %>
           <%# end of submitted clues section %>
           <% if @current_round.arranging? %>
-            <div class="rounded-xl bg-slate-50 p-4">
+            <div class="rounded-xl bg-slate-100 p-4">
               <h2 class="mb-2 text-lg font-semibold text-slate-800">Arranging</h2>
               <% if current_player&.id == room.host_player_id %>
                 <p class="mb-4 text-slate-700">Drag the submitted cards into ascending order (1 to 100, left-to-right), then press Done.</p>
@@ -155,7 +119,7 @@
                         </div>
                         <!-- Clue -->
                         <div class="flex flex-1 items-center justify-center px-1">
-                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
+                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 wrap-break-word">
                             <%= assignment.clue_text %>
                           </p>
                         </div>
@@ -196,53 +160,16 @@
                 <p class="mb-4 text-slate-600">Host is arranging the cards...</p>
                 <div class="flex flex-wrap gap-4">
                   <% @current_round.submitted_assignments.each do |assignment| %>
-                    <div class="w-36 h-48 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                      <div class="flex h-full flex-col">
-                        <!-- Header -->
-                        <div class="flex items-center gap-2">
-                          <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
-                            ◆
-                          </span>
-                          <span class="truncate text-sm font-semibold text-slate-700">
-                            <%= assignment.player.nickname %>
-                          </span>
-                        </div>
-                        <!-- Clue -->
-                        <div class="flex flex-1 items-center justify-center px-1">
-                          <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
-                            <%= assignment.clue_text %>
-                          </p>
-                        </div>
-                        <!-- Footer (empty for now) -->
-                        <div class="h-6">
-                          <!-- Future: revealed number, badges, etc. -->
-                        </div>
-                      </div>
-                    </div>
+                    <%= render "assignment_card", assignment: assignment %>
                   <% end %>
                 </div>
                 <!-- 1 to 100 and the Arrow -->
-                <div class="mt-4 flex items-center gap-3">
-                  <!-- 1 -->
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
-                    1
-                  </div>
-                  <!-- Arrow pointing both LEFT and RIGHT -->
-                  <div class="flex flex-1 items-center">
-                    <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
-                    <div class="h-px flex-1 bg-slate-500"></div>
-                    <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
-                  </div>
-                  <!-- 100 -->
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
-                    100
-                  </div>
-                </div>
+                <%= render "arrows" %>
               <% end %>
             </div>
           <% end %>
           <% if @current_round.revealed? %>
-            <div class="rounded-xl bg-slate-50 p-4">
+            <div class="rounded-xl bg-slate-100 p-4">
               <div class="flex items-center justify-center gap-3">
                 <h2 class="mb-3 text-lg font-semibold text-slate-800">Result:</h2>
                 <% if @current_round.successful? %>
@@ -270,7 +197,7 @@
                       </div>
                       <!-- Clue -->
                       <div class="flex flex-1 items-center justify-center px-1">
-                        <p class="text-center text-lg font-semibold leading-tight text-slate-900 break-words">
+                        <p class="text-center text-lg font-semibold leading-tight text-slate-900 wrap-break-word">
                           <%= assignment.clue_text %>
                         </p>
                       </div>
@@ -286,27 +213,12 @@
                 <% end %>
               </div>
               <!-- 1 to 100 and the Arrow -->
-              <div class="mt-4 flex items-center gap-3">
-                <!-- 1 -->
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
-                  1
-                </div>
-                <!-- Arrow pointing both LEFT and RIGHT -->
-                <div class="flex flex-1 items-center">
-                  <div class="h-0 w-0 border-y-[5px] border-r-8 border-y-transparent border-r-slate-500"></div>
-                  <div class="h-px flex-1 bg-slate-500"></div>
-                  <div class="h-0 w-0 border-y-[5px] border-l-8 border-y-transparent border-l-slate-500"></div>
-                </div>
-                <!-- 100 -->
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
-                  100
-                </div>
-              </div>
+              <%= render "arrows" %>
             </div>
           <% end %>
           <% current_assignment = @current_round.current_assignment %>
           <% if current_assignment && @current_round.turn? %>
-            <div class="rounded-xl bg-slate-50 p-4">
+            <div class="rounded-xl bg-slate-100 p-4">
               <h2 class="mb-2 text-lg font-semibold text-slate-800">Current Turn</h2>
               <p class="text-slate-700">
                 <strong>Player:</strong> <%= current_assignment.player.nickname %>

@@ -22,4 +22,12 @@ class Round < ApplicationRecord
   def successful?
     submitted_assignments.to_a == round_assignments.order(:secret_number).to_a
   end
+
+  after_create_commit lambda {
+    broadcast_refresh_later_to room
+  }
+
+  after_update_commit lambda {
+    broadcast_refresh_later_to room
+  }
 end

@@ -6,4 +6,7 @@ class Player < ApplicationRecord
   validates :color, presence: true
   validates :session_token, presence: true, uniqueness: true
 
+  after_create_commit lambda {
+    broadcast_refresh_later_to room
+  }
 end
