@@ -26,7 +26,7 @@
     <h2 class="mb-3 text-lg font-semibold text-slate-800">Players</h2>
     <div class="mb-6 rounded-xl bg-slate-200 p-4">
       <div class="space-y-3">
-        <% room.players.order(:created_at).each do |player| %>
+        <% room.players.active.order(:created_at).each do |player| %>
           <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3">
             <div class="flex items-center gap-3">
               <span class="text-lg font-bold <%= diamond_color_class(player.color) %>">◆</span>
@@ -44,6 +44,13 @@
         <% end %>
       </div>
     </div>
+    <!-- Leave button -->
+    <% if current_player %>
+      <%= button_to "Leave Room",
+        player_path(current_player),
+        method: :delete,
+        class: "rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-300" %>
+    <% end %>
   </aside>
   <!-- Center-Right Gameplay Area -->
   <main class="lg:col-span-3 bg-indigo-300 p-6 shadow-lg rounded-2xl">

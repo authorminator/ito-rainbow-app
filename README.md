@@ -30,3 +30,5 @@ Branch base2 - MVP but with bad UI and no live update.
 Branch base3 - MVP with good UI
 
 Branch base_b1 - MVP (with already improve UI and looks) with Turbo updates
+
+Branch base_b2 - MVP with Leave button (with Host transfer)

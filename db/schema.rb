@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_26_074515) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_24_092524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_26_074515) do
     t.string "session_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "left_at"
     t.index ["room_id"], name: "index_players_on_room_id"
   end
 

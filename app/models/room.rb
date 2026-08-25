@@ -7,8 +7,11 @@ class Room < ApplicationRecord
   validates :code, presence: true, uniqueness: true
   validates :cards_per_player, presence: true, inclusion: { in: [1, 2, 3] }
 
+  after_update_commit lambda {
+    broadcast_refresh_later_to self
+  }
+
   def host
     players.find_by(id: host_player_id)
   end
-
 end
