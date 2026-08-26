@@ -1,0 +1,41 @@
+<div
+  data-confirm-modal-target="modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50"
+>
+  <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <h2 class="mb-3 text-xl font-bold text-slate-800">
+      Are you sure?
+    </h2>
+    <p
+      data-confirm-modal-target="message"
+      class="mb-6 text-slate-600"
+    ></p>
+    <div class="flex justify-end gap-3">
+      <button
+        type="button"
+        data-action="confirm-modal#close"
+        class="rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-300"
+      >
+        Cancel
+      </button>
+      <form
+        method="post"
+        data-confirm-modal-target="form"
+      >
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <input
+    type="hidden"
+    name="_method"
+    value="post"
+    data-confirm-modal-target="method"
+  >
+          <button
+          type="submit"
+          class="rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-700"
+        >
+            Confirm
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>

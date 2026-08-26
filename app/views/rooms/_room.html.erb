@@ -44,13 +44,45 @@
         <% end %>
       </div>
     </div>
-    <!-- Leave button -->
-    <% if current_player %>
-      <%= button_to "Leave Room",
-        player_path(current_player),
-        method: :delete,
-        class: "rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-800 hover:bg-slate-300" %>
-    <% end %>
+    <!-- Buttons and Modals -->
+    <div data-controller="confirm-modal">
+      <!-- Leave button -->
+      <% if current_player %>
+        <button
+    type="button"
+    data-action="confirm-modal#open"
+    data-url="<%= player_path(current_player) %>"
+    data-method="delete"
+    data-message="Leave this room? Your unsubmitted cards will be removed from the current round."
+    class="rounded-xl bg-slate-200 px-4 py-2 mb-2 font-semibold text-slate-800 hover:bg-slate-300"
+  >
+          Leave Room
+        </button>
+      <% end %>
+      <% if current_player&.id == room.host_player_id && room.in_round? %>
+        <div class="flex justify-end gap-3">
+          <button
+    type="button"
+    data-action="confirm-modal#open"
+    data-url="<%= restart_round_room_path(room.code) %>"
+    data-message="Restart this round? Current clues and progress will be discarded, but the same theme will be kept."
+    class="rounded-xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-300"
+  >
+            Restart Round
+          </button>
+          <button
+    type="button"
+    data-action="confirm-modal#open"
+    data-url="<%= next_round_room_path(room.code) %>"
+    data-message="Start the next round? Current progress will be discarded and a new theme will be chosen."
+    class="rounded-xl bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+  >
+            Next Round
+          </button>
+        </div>
+      <% end %>
+      <%= render "shared/confirm_modal" %>
+    </div>
   </aside>
   <!-- Center-Right Gameplay Area -->
   <main class="lg:col-span-3 bg-indigo-300 p-6 shadow-lg rounded-2xl">
@@ -87,14 +119,14 @@
               <% if @current_round.submitted_assignments.any? %>
                 <div class="flex flex-wrap gap-4">
                   <% @current_round.submitted_assignments.each do |assignment| %>
-                    <%= render "assignment_card", assignment: assignment %>
+                    <%= render "shared/assignment_card", assignment: assignment %>
                   <% end %>
                 </div>
                 <!-- 1 to 100 and the Arrow -->
-                <%= render "arrows" %>
+                <%= render "shared/arrows" %>
               <% else %>
                 <p class="text-slate-600">No clues submitted yet.</p>
-                <%= render "arrows" %>
+                <%= render "shared/arrows" %>
               <% end %>
             </div>
           <% end %>
@@ -167,11 +199,11 @@
                 <p class="mb-4 text-slate-600">Host is arranging the cards...</p>
                 <div class="flex flex-wrap gap-4">
                   <% @current_round.submitted_assignments.each do |assignment| %>
-                    <%= render "assignment_card", assignment: assignment %>
+                    <%= render "shared/assignment_card", assignment: assignment %>
                   <% end %>
                 </div>
                 <!-- 1 to 100 and the Arrow -->
-                <%= render "arrows" %>
+                <%= render "shared/arrows" %>
               <% end %>
             </div>
           <% end %>
@@ -220,7 +252,7 @@
                 <% end %>
               </div>
               <!-- 1 to 100 and the Arrow -->
-              <%= render "arrows" %>
+              <%= render "shared/arrows" %>
             </div>
           <% end %>
           <% current_assignment = @current_round.current_assignment %>

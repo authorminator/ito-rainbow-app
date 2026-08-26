@@ -1,11 +1,14 @@
 Rails.application.routes.draw do
-  root "pages#home"
+  root 'pages#home'
 
-  get  "/rooms/join", to: "rooms#join"
+  get  '/rooms/join', to: 'rooms#join'
 
-  resources :rooms, param: :code, only: [:show, :create] do
+  resources :rooms, param: :code, only: %i[show create] do
     post :join, on: :member
-    post :start_round, on: :member, to: "rounds#create"
+
+    post :start_round, on: :member, to: 'rounds#create'
+    post :next_round, on: :member, to: 'rounds#next_round'
+    post :restart_round, on: :member, to: 'rounds#restart_round'
   end
 
   resources :rounds, only: [] do
@@ -16,5 +19,5 @@ Rails.application.routes.draw do
     post :update_order, on: :member
   end
 
-  resources :players, only: [:create, :destroy]
+  resources :players, only: :destroy
 end
