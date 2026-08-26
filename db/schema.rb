@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_24_092524) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_26_090147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "players", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.string "nickname"
-    t.string "color"
     t.string "session_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -44,6 +43,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_24_092524) do
     t.integer "display_order", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "color", default: "blue", null: false
     t.index ["player_id"], name: "index_round_assignments_on_player_id"
     t.index ["round_id"], name: "index_round_assignments_on_round_id"
   end

@@ -1,6 +1,4 @@
 class RoomsController < ApplicationController
-  PLAYER_COLORS = %w[blue green red purple orange teal pink yellow].freeze
-
   def show
     @room = Room.includes(:players, rounds: :round_assignments).find_by!(code: params[:code])
     @current_round = @room.rounds.order(created_at: :desc).first
@@ -23,7 +21,6 @@ class RoomsController < ApplicationController
 
       player = room.players.create!(
         nickname: nickname,
-        color: PLAYER_COLORS.first,
         session_token: SecureRandom.hex(16)
       )
 
@@ -47,13 +44,13 @@ class RoomsController < ApplicationController
 
     redirect_to room_path(room.code) and return if current_player && current_player.room_id == room.id
 
-    next_color = next_available_color(room)
-
-    redirect_to root_path, alert: 'Room is full.' and return if next_color.nil?
+    if (room.players.active.count + 1) * room.cards_per_player > 8
+      redirect_to root_path, alert: 'Room is full.'
+      return
+    end
 
     player = room.players.create!(
       nickname: nickname,
-      color: next_color,
       session_token: SecureRandom.hex(16)
     )
 
@@ -70,10 +67,5 @@ class RoomsController < ApplicationController
       code = SecureRandom.alphanumeric(6).upcase
       break code unless Room.exists?(code: code)
     end
-  end
-
-  def next_available_color(room)
-    used_colors = room.players.pluck(:color)
-    PLAYER_COLORS.find { |color| !used_colors.include?(color) }
   end
 end

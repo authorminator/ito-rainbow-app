@@ -3,7 +3,6 @@ class Player < ApplicationRecord
   has_many :round_assignments, dependent: :destroy
 
   validates :nickname, presence: true
-  validates :color, presence: true
   validates :session_token, presence: true, uniqueness: true
   scope :active, -> { where(left_at: nil) }
 

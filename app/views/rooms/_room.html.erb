@@ -29,7 +29,15 @@
         <% room.players.active.order(:created_at).each do |player| %>
           <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3">
             <div class="flex items-center gap-3">
-              <span class="text-lg font-bold <%= diamond_color_class(player.color) %>">◆</span>
+              <div class="flex shrink-0 gap-1">
+                <% if @current_round %>
+                  <% @current_round.round_assignments.where(player: player).each do |assignment| %>
+                    <span class="text-lg font-bold <%= diamond_color_class(assignment.color) %>">
+                      ◆
+                    </span>
+                  <% end %>
+                <% end %>
+              </div>
               <span class="font-medium text-slate-800"><%= player.nickname %></span>
             </div>
             <div class="flex flex-wrap items-center gap-2">
@@ -60,7 +68,7 @@
         </button>
       <% end %>
       <% if current_player&.id == room.host_player_id && room.in_round? %>
-        <div class="flex justify-end gap-3">
+        <div class="flex justify-between gap-3">
           <button
     type="button"
     data-action="confirm-modal#open"
@@ -230,9 +238,7 @@
                     <div class="flex h-full flex-col">
                       <!-- Header -->
                       <div class="flex items-center gap-2">
-                        <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
-                          ◆
-                        </span>
+                        <%= render "shared/diamond", assignment: assignment %>
                         <span class="truncate text-sm font-semibold text-slate-700">
                           <%= assignment.player.nickname %>
                         </span>
@@ -246,10 +252,12 @@
                       <!-- Footer (empty for now) -->
                       <div class="h-6">
                         <!-- Future: revealed number, badges, etc. -->
+                        <div class="mt-auto pt-2 text-end">
+                          <span class="text-xl font-bold text-slate-900">
+                            <%= assignment.secret_number %>
+                          </span>
+                        </div>
                       </div>
-                      <p class="mt-1 text-slate-700">
-                        <strong>Number: <%= assignment.secret_number %></strong>
-                      </p>
                     </div>
                   </div>
                 <% end %>

@@ -10,6 +10,8 @@ class RoundsController < ApplicationController
     'Cute things'
   ].freeze
 
+  ASSIGNMENT_COLORS = %w[blue green red purple orange teal pink yellow].freeze
+
   def create
     room = Room.includes(:players).find_by!(code: params[:code])
 
@@ -168,6 +170,8 @@ class RoundsController < ApplicationController
   private
 
   def create_round_for(room, theme:)
+    colors = ASSIGNMENT_COLORS.shuffle
+
     total_cards = room.players.active.count * room.cards_per_player
 
     round = room.rounds.create!(
@@ -198,7 +202,8 @@ class RoundsController < ApplicationController
         clue_text: nil,
         submitted: false,
         turn_position: turn_positions[index],
-        display_order: index + 1
+        display_order: index + 1,
+        color: colors[index]
       )
     end
 
