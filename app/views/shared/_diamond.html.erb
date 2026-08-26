@@ -1,0 +1,11 @@
+<div class="relative h-10 w-10 shrink-0 <%= diamond_color_class(assignment.player.color) %>">
+  <div
+    class="absolute inset-0 bg-current
+           mask-[url('/diamond.png')]
+           mask-contain mask-center mask-no-repeat"
+    aria-hidden="true">
+  </div>
+  <%= image_tag "/diamond.png",
+        class: "absolute inset-0 h-full w-full object-contain mix-blend-multiply",
+        alt: "Colored diamond" %>
+</div>

@@ -2,9 +2,7 @@
   <div class="flex h-full flex-col">
     <!-- Header -->
     <div class="flex items-center gap-2">
-      <span class="text-xl font-bold <%= diamond_color_class(assignment.player.color) %>">
-        ◆K
-      </span>
+      <%= render "shared/diamond", assignment: assignment %>
       <span class="truncate text-sm font-semibold text-slate-700">
         <%= assignment.player.nickname %>
       </span>
@@ -18,6 +16,11 @@
     <!-- Footer (empty for now) -->
     <div class="h-6">
       <!-- Future: revealed number, badges, etc. -->
+      <div class="mt-auto pt-2 text-end">
+        <span class="text-xl font-bold text-slate-900">
+          <%= current_player&.id == assignment.player_id ? assignment.secret_number : "?" %>
+        </span>
+      </div>
     </div>
   </div>
 </div>

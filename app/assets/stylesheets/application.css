@@ -13,3 +13,32 @@
  *= require_tree .
  *= require_self
  */
+
+.diamond-mask {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: currentColor;
+
+  -webkit-mask-image: url("/diamond.png");
+  mask-image: url("/diamond.png");
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+}
+
+/* .diamond-mask {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: currentColor;
+
+  -webkit-mask: url("/diamond.png") center / contain no-repeat;
+  mask: url("/diamond.png") center / contain no-repeat;
+
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+} */

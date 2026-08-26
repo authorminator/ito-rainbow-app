@@ -28,9 +28,11 @@ class PlayersController < ApplicationController
     player.update!(left_at: Time.current)
 
     if room.players.active.none?
+      room.destroy!
+
       session.delete(:player_session_token)
 
-      redirect_to root_path, notice: 'You left the room.'
+      redirect_to root_path, notice: 'Room closed.'
       return
     end
 
