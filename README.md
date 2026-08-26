@@ -33,4 +33,4 @@ Branch base_b1 - MVP (with already improve UI and looks) with Turbo updates
 
 Branch base_b2 - MVP with Leave button (with Host transfer)
 
-Branch base_b3 - MVP with Next Round button
+Branch base_b3 - MVP with Restart and Next Round button
