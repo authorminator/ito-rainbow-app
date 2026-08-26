@@ -1,40 +1,16 @@
-# README
+# Ito Rainbow
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A multiplayer web game inspired by Ito Rainbow by Arclight.
 
-Things you may want to cover:
+Built with Ruby on Rails, Tailwind CSS, Stimulus, Turbo, and SortableJS.
 
-- Ruby version
+## Features
 
-- System dependencies
-
-- Configuration
-
-- Database creation
-
-- Database initialization
-
-- How to run the test suite
-
-- Services (job queues, cache servers, search engines, etc.)
-
-- Deployment instructions
-
-- ...
-
----
-
-Branch base2 - MVP but with bad UI and no live update.
-
-Branch base3 - MVP with good UI
-
-Branch base_b1 - MVP (with already improve UI and looks) with Turbo updates
-
-Branch base_b2 - MVP with Leave button (with Host transfer)
-
-Branch base_b3 - MVP with Restart and Next Round button
-
-Branch base_b4 - MVP with Empty-Room clean-up and actual Diamond image
-
-Branch base_b5 - MVP with Colored Diamonds for Assignments, rather than for Player
+- Room-based multiplayer
+- 2–8 cards per round
+- Private secret numbers
+- Clue submission and ordering
+- Drag-and-drop card arrangement
+- Real-time updates with Turbo
+- Host transfer
+- Restart and next-round functionality
