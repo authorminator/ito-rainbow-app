@@ -7,7 +7,7 @@ class Player < ApplicationRecord
   scope :active, -> { where(left_at: nil) }
 
   after_create_commit lambda {
-    broadcast_refresh_to room
+    broadcast_refresh_later_to room
   }
 
   after_destroy_commit lambda {
